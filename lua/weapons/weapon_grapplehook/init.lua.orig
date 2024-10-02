@@ -39,8 +39,12 @@ function SWEP:PrimaryAttack()
             end
         end
     end
+<<<<<<< HEAD
+end
+=======
 
 -- TODO: Use this to let the player swing and not pull towards the hook point.
 function SWEP:SecondaryAttack()
 
 end
+>>>>>>> c1702e59a96e5ac2a72c4b99275c5631f76bb227
