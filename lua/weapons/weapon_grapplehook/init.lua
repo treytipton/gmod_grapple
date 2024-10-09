@@ -33,7 +33,7 @@ function SWEP:PrimaryAttack()
                 self.hookEntity = ents.Create("prop_physics")
                 self.hookEntity:SetPos(hookPos)
                 self.hookEntity:SetModel("models/props_junk/PopCan01a.mdl")
-                self.hookEntity:SetNoDraw(false)
+                self.hookEntity:SetNoDraw(true)
                 self.hookEntity:Spawn()
                 self.hookEntity:Activate()
 
