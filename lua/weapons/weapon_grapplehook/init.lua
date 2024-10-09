@@ -21,8 +21,11 @@ function SWEP:PrimaryAttack()
             local hookPos = eyeTrace.HitPos
             local distance = (hookPos - owner:GetPos()):Length()
 
-            if distance > 2000 then return end -- Limit grapple hook hit range.
-        
+            if distance > 2000 then -- TODO: Rope to max range and then retract it back to player.
+                self:RemoveRope()
+                return -- Out of range, reset fields.
+            end 
+
             local ropeLength = distance
 
             -- Create hook entity only if it doesn't exist
