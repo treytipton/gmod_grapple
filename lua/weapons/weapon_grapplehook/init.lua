@@ -71,7 +71,8 @@ function SWEP:PrimaryAttack()
 end
 
 function SWEP:SecondaryAttack()
-    self:RemoveRope() -- Properly use self here with a colon
+    if(self.PrimaryAttackHold == true) then return end  //!< Already using primary fire, don't do anything.
+    self:RemoveRope()
 end
 
 function SWEP:OnPrimaryFireReleased()
