@@ -6,8 +6,8 @@ resource.AddFile("addons/basic_grapple/lua/weapons/weapon_grapplehook/init.lua")
 
 function SWEP:Initialize()
     self:SetHoldType("crossbow")
-    self.Rope = nil -- Track rope constraint to prevent multiple ropes and so we can clear it.
-    self.hookEntity = nil -- Track hook entity as well.
+    self.Rope = nil
+    self.hookEntity = nil
     self.PrimaryAttackHold = false
 end
 
@@ -37,19 +37,18 @@ function SWEP:PrimaryAttack()
                 self.hookEntity:Spawn()
                 self.hookEntity:Activate()
 
-                -- Freeze the hook entity in place so it doesn't move
+                -- Freeze the hook entity in place
                 local phys = self.hookEntity:GetPhysicsObject()
                 if IsValid(phys) then
-                    phys:EnableMotion(false) -- This will freeze the hook entity
+                    phys:EnableMotion(false)
                 end
             end
 
-            -- Create rope constraint only if it doesn't exist
+            -- Create rope constraint
             if not IsValid(self.Rope) then
                 self.Rope = constraint.Rope(owner, self.hookEntity, 0, 0, Vector(0, 0, 0), Vector(0, 0, 0), ropeLength, 0, 0, 1, "cable/cable2", false)
             end
 
-            -- Hook for applying constant force to the player
             local weapon = self
             hook.Add("Tick", "GrapplePull" .. self:EntIndex(), function()
                 if weapon.PrimaryAttackHold and IsValid(weapon.hookEntity) then
@@ -61,7 +60,7 @@ function SWEP:PrimaryAttack()
                 end
             end)
 
-            -- Remove rope and hook entity after releasing primary fire
+            -- Detect when player releases primary fire
             hook.Add("PlayerButtonUp", "GrappleRelease" .. self:EntIndex(), function(ply, releasedButton)
                 if ply == weapon:GetOwner() and releasedButton == MOUSE_LEFT then
                     weapon:OnPrimaryFireReleased()
@@ -71,7 +70,6 @@ function SWEP:PrimaryAttack()
     end
 end
 
--- Secondary attack function can be added later.
 function SWEP:SecondaryAttack()
     self:RemoveRope() -- Properly use self here with a colon
 end
