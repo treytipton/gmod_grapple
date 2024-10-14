@@ -27,6 +27,9 @@ SWEP.DrawCrosshair = true
 SWEP.ViewModel = "models/weapons/v_crossbow.mdl"
 SWEP.WorldModel = "models/weapons/w_crossbow.mdl"
 
+SWEP.MaxGrappleDistance = 2000
+SWEP.PrimaryAttackHold = false
+
 function SWEP:Initialize()
     self:SetHoldType("crossbow")
 end

@@ -4,6 +4,8 @@ include("shared.lua")
 
 resource.AddFile("addons/basic_grapple/lua/weapons/weapon_grapplehook/init.lua")
 
+util.AddNetworkString("GrapplePrimaryAttackHold")
+
 function SWEP:Initialize()
     self:SetHoldType("crossbow")
     self.Rope = nil
@@ -15,19 +17,20 @@ function SWEP:PrimaryAttack()
     if SERVER and not self.PrimaryAttackHold then
         local owner = self:GetOwner()
         local eyeTrace = owner:GetEyeTrace() -- Find where player is looking.
-        self.PrimaryAttackHold = true
+        local maxDistance = self.MaxGrappleDistance
 
         if eyeTrace.Hit then
             local hookPos = eyeTrace.HitPos
             local distance = (hookPos - owner:GetPos()):Length()
 
-            if distance > 2000 then -- TODO: Rope to max range and then retract it back to player.
+            if distance > maxDistance then -- TODO: Rope to max range and then retract it back to player.
                 self:RemoveRope()
                 return -- Out of range, reset fields.
             end 
 
             local ropeLength = distance
-
+            self:SetPrimaryAttackHold(true)
+            
             -- Create hook entity only if it doesn't exist
             if not IsValid(self.hookEntity) then
                 self.hookEntity = ents.Create("prop_physics")
@@ -75,8 +78,19 @@ function SWEP:SecondaryAttack()
     self:RemoveRope()
 end
 
+function SWEP:SetPrimaryAttackHold(state)
+    self.PrimaryAttackHold = state
+
+    -- Send the state to the client
+    net.Start("GrapplePrimaryAttackHold")
+    net.WriteBool(state)
+    net.Send(self:GetOwner())
+end
+
+
 function SWEP:OnPrimaryFireReleased()
     self:RemoveRope() -- Properly remove the rope and hook
+    self:SetPrimaryAttackHold(false)
 end
 
 function SWEP:RemoveRope()
